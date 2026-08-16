@@ -9,7 +9,24 @@ import { prisma } from "./lib/prisma";
 const port = Number(process.env.PORT ?? 5000);
 
 const app = express();
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(200);
+  }
+  next();
+});
 app.use(express.json());
+
+app.get("/", (req, res) => {
+  res.status(200).send("Backend server running");
+});
+
+app.get("/health", (req, res) => {
+  res.status(200).send("OK");
+});
 
 const server = http.createServer(app);
 
